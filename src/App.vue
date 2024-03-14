@@ -7,6 +7,20 @@
   </div>
 </template>
 
+<script>
+
+import favicon from '@/assets/favicon.ico'
+
+export default {
+  metaInfo: {
+    title: 'Birthday notificator',
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: favicon }
+    ]
+  }
+}
+</script>
+
 <style>
 *{
   padding: 0;
