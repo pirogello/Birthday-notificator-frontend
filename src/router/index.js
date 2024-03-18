@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainView from '../views/MainView.vue'
+import ChangeNotification from '../views/ChangeNotification.vue'
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'MainView',
-    component: MainView
+    component: MainView,
+    children: [
+      { path: 'notification/change/:id', component: ChangeNotification }
+    ]
   }
 ]
 

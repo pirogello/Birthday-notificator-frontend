@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="calendar_header">
-            <div class="calendar_header_text">{{currentMonthText}}   {{curYearNum}}</div>
+            <div class="calendar_header_text">{{currentMonthText}}</div>
             <div class="calendar_header_btns">
                 <button v-on:click="changeMonth(-1)">&lt;</button>
                 <button v-on:click="changeMonth(+1)">&gt;</button>
@@ -15,9 +15,9 @@
             </thead>
             <tbody>
                 <tr v-for="i in 5" :key="i">
-                    <td v-for="j in dayOfWeek.length" :key="j">
+                    <td v-for="j in dayOfWeek.length" :key="`${i}-${j}`">
                         <div class="num_of_day">{{ getNumOfDayInTable(i, j) }}</div>
-                        <CalendarItem :notification="getNotificationForTable(getNumOfDayInTable(i, j))"/>
+                        <CalendarItem :notifications="getNotificationsForDay(getNumOfDayInTable(i, j))"/>
                     </td>
                 </tr>
             </tbody>
@@ -26,58 +26,63 @@
 </template>
 
 <script>
+import { getAllNotificationBetween } from '@/api/notificationRepo'
 import CalendarItem from '@/components/CalendarItem.vue'
 export default {
   name: 'MainView',
-  props: {
-    notifications: {
-      type: Array,
-      default: () => []
-    }
-  },
   components: {
     CalendarItem
   },
   data () {
     return {
+      notifications: [],
       dayOfWeek: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-      month: ['Январь', 'Фервраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-      curMonthNum: new Date().getMonth(),
-      curYearNum: new Date().getFullYear()
+      month: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+      curMonthNum: new Date().getMonth()
     }
+  },
+  async created () {
+    const year = new Date().getFullYear()
+    const month = (this.curMonthNum + 1 < 10 ? ('0' + (this.curMonthNum + 1)) : (this.curMonthNum + 1))
+    const daysInMonth = new Date(year, month, 0).getDate()
+    this.notifications = await getAllNotificationBetween(`${year}-${month}-01`, `${year}-${month}-${daysInMonth}`)
   },
   methods: {
     getNumOfDayInTable: function (i, j) {
-      const year = this.curYearNum
+      const year = new Date().getFullYear()
       const month = this.curMonthNum + 1
-      const day = new Date(year + '-' + month + '-01').getDay()
-      if (i === 1 && j < day) return ''
-      const dayOfMonth = ((i - 1) * 7) + j - (day - 1)
+      const numOfweek = new Date(year + '-' + month + '-01').getDay()
+      if (i === 1 && j < numOfweek) return ''
+      const dayOfMonth = ((i - 1) * 7) + j - (numOfweek - 1)
       return dayOfMonth > new Date(year, month, 0).getDate() ? '' : dayOfMonth
     },
-    getNotificationForTable: function (day) {
-      const res = this.notifications.find(el => {
-        const spitedDate = el.birthdayDate.split('-')
-        return spitedDate[2] === (day < 10 ? ('0' + day) : day) &&
-               spitedDate[1] === (this.curMonthNum + 1 < 10 ? ('0' + (this.curMonthNum + 1)) : (this.curMonthNum + 1)) &&
-               spitedDate[0] === this.curYearNum + ''
-      })
-      return res
-    },
-    changeMonth: function (num) {
+    changeMonth: async function (num) {
       this.curMonthNum += num
       if (this.curMonthNum < 0) {
         this.curMonthNum += 12
-        this.curYearNum--
       } else if (this.curMonthNum > 11) {
         this.curMonthNum -= 12
-        this.curYearNum++
       }
+      const year = new Date().getFullYear()
+      const month = (this.curMonthNum + 1 < 10 ? ('0' + (this.curMonthNum + 1)) : (this.curMonthNum + 1))
+      const daysInMonth = new Date(year, month, 0).getDate()
+      this.notifications = await getAllNotificationBetween(`${year}-${month}-01`, `${year}-${month}-${daysInMonth}`)
     }
   },
   computed: {
     currentMonthText: function () {
       return this.month[this.curMonthNum]
+    },
+    getNotificationsForDay () {
+      return (day) => {
+        if (!day) return null
+        const dayFormatted = day < 10 ? `0${day}` : day.toString()
+        const monthFormatted = this.curMonthNum + 1 < 10 ? `0${this.curMonthNum + 1}` : (this.curMonthNum + 1).toString()
+        return this.notifications.filter((notification) => {
+          const [, month, day] = notification.birthdayDate.split('-')
+          return day === dayFormatted && month === monthFormatted
+        })
+      }
     }
   }
 }

@@ -1,10 +1,13 @@
 <template>
     <div class="box">
-        <div>{{ notification.details }}</div>
-        <div>{{ notification.birthdayDate }}</div>
+      <div class="item_in_box" v-for="n in notifications" :key="n.id">
+        <router-link :to="`/notification/change/${n.id}`">Изменить</router-link>
+        <div>{{ n?.details }}</div>
+        <div>{{ n?.birthdayDate }}</div>
         <div class="period_list">
-            <div v-for="period in notification.periods" :key="period">{{ period }}</div>
+            <div v-for="period in n?.periods" :key="period">{{ period }}</div>
         </div>
+      </div>
     </div>
 </template>
 
@@ -14,15 +17,9 @@ export default {
   components: {
   },
   props: {
-    notification: {
-      type: Object,
-      default: function () {
-        return {
-          id: '',
-          details: '',
-          birthdayDate: ''
-        }
-      }
+    notifications: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
@@ -42,9 +39,13 @@ export default {
   padding: 10px 5px;
   width: 100%;
   height: 80%;
+  overflow: auto;
 }
 .period_list{
   display: flex;
   flex-direction: row;
+}
+.item_in_box{
+  border:1px solid rgb(168, 87, 87);
 }
 </style>
