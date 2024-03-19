@@ -5,7 +5,7 @@
         <div>{{ n?.details }}</div>
         <div>{{ n?.birthdayDate }}</div>
         <div class="period_list">
-            <div v-for="period in n?.periods" :key="period">{{ period }}</div>
+            <div v-for="period in n?.periods" :key="period">{{ period }}, </div>
         </div>
       </div>
     </div>

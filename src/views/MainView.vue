@@ -1,7 +1,7 @@
 <template>
     <div>
         <CalendarTable></CalendarTable>
-        <router-view></router-view>
+        <router-view/>
     </div>
 </template>
 

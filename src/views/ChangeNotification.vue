@@ -14,26 +14,20 @@
            <div class="form_row">
                 <div class="period_list">
                     <div>Напомнить </div>
-                    <div>
-                        <label for="1">за 1 день до ДР </label>
-                        <input type="checkbox" id="1" value="1" v-model="notification.periods">
-                    </div>
-                   <div>
-                        <label for="3">за 3 день до ДР </label>
-                        <input type="checkbox" id="3" value="3" v-model="notification.periods">
-                   </div>
-                    <div>
-                        <label for="7">за 7 день до ДР </label>
-                        <input type="checkbox" id="7" value="7" v-model="notification.periods">
+                    <div v-for="np in periodsOfNotification" :key="np">
+                      <label :for="np">за {{np}} день до ДР </label>
+                      <input type="checkbox" :id="np" :value="np" v-model="notification.periods">
                     </div>
                 </div>
            </div>
+           <button v-on:click="changeNotification">Изменить</button>
         </div>
     </div>
 </template>
 
 <script>
-import { getNotificationById } from '@/api/notificationRepo'
+import { changeNotification, getNotificationById, getAllAvailablePeriods } from '@/api/notificationRepo'
+import { EventBus } from '@/plugins/event-bus'
 export default {
   name: 'ChangeNotification',
   components: {
@@ -46,8 +40,19 @@ export default {
   },
   async created () {
     this.notification = await getNotificationById(this.$route.params.id)
+    this.periodsOfNotification = (await getAllAvailablePeriods()).periods
   },
   methods: {
+    changeNotification: async function () {
+      const updatedNotification = await changeNotification({
+        id: this.notification.id,
+        details: this.notification.details,
+        birthdayDate: this.notification.birthdayDate,
+        periods: this.notification.periods
+      })
+      EventBus.$emit('updateNotification', updatedNotification)
+      this.$router.push({ path: '/' })
+    }
   }
 }
 </script>
@@ -60,7 +65,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.39);
-  z-index: 9999;
+  z-index: 1000;
 }
 .modal{
   background-color: rgb(95, 192, 209);
@@ -69,7 +74,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 40px 100px;
-  z-index: 9999;
+  z-index: 1000;
 }
 .form_row{
   padding-top: 10px;

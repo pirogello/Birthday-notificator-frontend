@@ -28,6 +28,7 @@
 <script>
 import { getAllNotificationBetween } from '@/api/notificationRepo'
 import CalendarItem from '@/components/CalendarItem.vue'
+import { EventBus } from '@/plugins/event-bus'
 export default {
   name: 'MainView',
   components: {
@@ -42,6 +43,10 @@ export default {
     }
   },
   async created () {
+    EventBus.$on('updateNotification', (updatedNotification) => {
+      const idxOfUpdatedNotification = this.notifications.findIndex(n => n.id === updatedNotification.id)
+      this.$set(this.notifications, idxOfUpdatedNotification, updatedNotification)
+    })
     const year = new Date().getFullYear()
     const month = (this.curMonthNum + 1 < 10 ? ('0' + (this.curMonthNum + 1)) : (this.curMonthNum + 1))
     const daysInMonth = new Date(year, month, 0).getDate()
