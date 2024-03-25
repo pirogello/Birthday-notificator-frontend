@@ -4,10 +4,4 @@
     --table-notification-bg-color: rgba(139, 233, 139, 0.425);
     --table-notification-item-bg-color: rgba(116, 190, 116, 0.425);
   }
-
-  input[type="text"] {
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    margin: 0;
-  }
+  
