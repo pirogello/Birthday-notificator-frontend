@@ -12,7 +12,6 @@ export function getNotificationById (id) {
     .catch((error) => console.log(error))
     .finally(() => {
       EventBus.$emit('loading', false)
-      console.log('getNotificationById')
     })
 }
 
@@ -25,7 +24,6 @@ export function getAllNotificationBetween (from, to) {
     .catch((error) => console.log(error))
     .finally(() => {
       EventBus.$emit('loading', false)
-      console.log('getAllNotificationBetween')
     })
 }
 
@@ -38,7 +36,6 @@ export function getAllAvailablePeriods () {
     .catch((error) => console.log(error))
     .finally(() => {
       EventBus.$emit('loading', false)
-      console.log('getAllAvailablePeriods')
     })
 }
 
@@ -51,6 +48,5 @@ export function changeNotification (notification) {
     .catch((error) => console.log(error))
     .finally(() => {
       EventBus.$emit('loading', false)
-      console.log('changeNotification')
     })
 }

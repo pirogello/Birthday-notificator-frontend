@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainView from '../views/MainView.vue'
 import ChangeNotification from '../views/ChangeNotification.vue'
+import LoginForm from '@/components/LoginForm.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -11,6 +12,10 @@ const routes = [
     children: [
       { path: 'notification/change/:id', component: ChangeNotification }
     ]
+  },
+  {
+    path: '/login',
+    component: LoginForm
   }
 ]
 

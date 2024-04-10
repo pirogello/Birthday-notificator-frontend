@@ -83,7 +83,7 @@ export default {
         if (!day) return null
         const dayFormatted = day < 10 ? `0${day}` : day.toString()
         const monthFormatted = this.curMonthNum + 1 < 10 ? `0${this.curMonthNum + 1}` : (this.curMonthNum + 1).toString()
-        return this.notifications.filter((notification) => {
+        return this.notifications?.filter((notification) => {
           const [, month, day] = notification.birthdayDate.split('-')
           return day === dayFormatted && month === monthFormatted
         })

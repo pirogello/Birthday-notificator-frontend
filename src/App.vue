@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <div class="wrapper">
+      <Header></Header>
       <Loader v-if="isLoading"/>
-      <h1 class="title">Birthday notificator</h1>
       <router-view/>
     </div>
   </div>
@@ -12,10 +12,11 @@
 
 import favicon from '@/assets/favicon.ico'
 import Loader from '@/components/Loader.vue'
+import Header from '@/components/Header.vue'
 import { EventBus } from '@/plugins/event-bus.js'
 export default {
   components: {
-    Loader
+    Loader, Header
   },
   data () {
     return {
